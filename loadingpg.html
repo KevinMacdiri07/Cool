@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Portal</title>
+    <style>
+    body {
+    font-family: Arial, sans-serif;
+    background-image: linear-gradient(to bottom, #3498db, #2ecc71);
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    text-align: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+#start-game {
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4CAF50;
+    color: #fff;
+    cursor: pointer;
+}
+
+#start-game:hover {
+    background-color: #3e8e41;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to the Game!</h1>
+        <button id="start-game">Start Game</button>
+    </div>
+
+    <script>
+        document.getElementById("start-game").addEventListener("click", () => {
+            window.location.href = "gam1.html";
+        });
+    </script>
+</body>
+</html>
