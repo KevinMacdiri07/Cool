@@ -1,130 +1,164 @@
-<html>
+<!DOCTYPE html><html lang="en">
 <head>
-    <style type="text/css">
-        *
-        {
-            width: 100%;
-            height: 100vh;
-            position: absolute;
-            overflow: hidden;
-            margin: 0;
-            padding: 0;
-        }
-        p#main
-        {
-            width: 60px;
-            height: 40px;
-            background-color: blue;
-            position: absolute;
-            bottom: 270px;
-            left: 70px;
-        }
-        .animate
-        {
-            animation: myAnimation 2.15s ease-in-out;
-            animation-iteration-count: 1;
-        }
-@keyframes myAnimation
-        {
-            0%
-            {
-                bottom: 270px;
-            }
-            50%
-            {
-                bottom: 400px;
-            }
-            100%
-            {
-                bottom: 270px;
-            }
-        }
-        p#opps
-        {
-            width: 50px;
-            height: 70px;
-            background-color: red;
-            position: absolute;
-            bottom: 270px;
-            left: 140%;
-            animation: moveLeft 4s infinite linear;
-            animation-delay: 3s;
-        }
-@keyframes moveLeft
-        {
-            0%
-            {
-                left: 140%;
-            }
-            100%
-            {
-                left: -40%;
-            }
-        }
-        p#ground
-        {
-            width: 100%;
-            height: 40vh;
-            background-color: green;
-            position: absolute;
-            bottom: 0;
-            margin: 0;
-            padding: 0;
-        }
-        #raiseM
-        {
-            width: 100px;
-            height: 50px;
-            background-color: black;
-            position: absolute;
-            left: 40%;
-            bottom: 100px;
-            margin: 0;
-            padding: 0;
-        }
-    </style>
-</head>
-<body>
-    <p id="main">
-        main
-    </p>
-    <p id="opps">
-        opps
-    </p>
-    <p id="ground">
-        ground
-    </p>
-    <button id="raiseM"></button>
-
-    <script type="text/javascript" charset="utf-8">
-    let gameStarted = false;
-
-function raiseMain() {
-    const button = document.getElementById("raiseM");
-    const paragraph = document.getElementById("main");
-    button.addEventListener("click", () => {
-        paragraph.classList.add("animate");
-        setTimeout(() => {
-            paragraph.classList.remove("animate");
-        }, 2150);
-        setTimeout(() => {
-            gameStarted = true;
-        }, 3000); // start game 3 seconds after button click
-    });
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }body {
+  background-color: #f8f8f8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
-setInterval(() => {
-    if (gameStarted) {
-        const mainStyleBottom = parseFloat(window.getComputedStyle(document.getElementById("main")).bottom);
-        const oppsStyleLeft = parseFloat(window.getComputedStyle(document.getElementById("opps")).left);
-        if ((mainStyleBottom >= 270 && mainStyleBottom <= 350) && (oppsStyleLeft >= 40 && oppsStyleLeft <= 100)) {
-            alert("you fail");
-            gameStarted = false;
-        }
-    }
-}, 10);
+.scoreboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 300px;
+  margin-bottom: 20px;
+  font-size: 18px;
+  color: #444;
+}
 
-raiseMain();
-    </script>
-</body>
+.score {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score span {
+  font-weight: bold;
+  font-size: 20px;
+}
+
+.turn {
+  margin: 10px 0 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 5px;
+  background-color: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.cell {
+  width: 90px;
+  height: 90px;
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.x { color: #ff5e5e; }
+.o { color: #70e000; }
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #333;
+  color: white;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+  </style>
+</head>
+<body>
+  <div class="scoreboard">
+    <div class="score"><span id="scoreX">0</span> <span style="color:#ff5e5e;">X Player</span></div>
+    <div class="score"><span style="color:#70e000;">O Player</span> <span id="scoreO">0</span></div>
+  </div>
+  <div class="turn" id="turn">X's Turn</div>
+  <div class="board" id="board">
+    <div class="cell" data-index="0"></div>
+    <div class="cell" data-index="1"></div>
+    <div class="cell" data-index="2"></div>
+    <div class="cell" data-index="3"></div>
+    <div class="cell" data-index="4"></div>
+    <div class="cell" data-index="5"></div>
+    <div class="cell" data-index="6"></div>
+    <div class="cell" data-index="7"></div>
+    <div class="cell" data-index="8"></div>
+  </div>
+  <button onclick="resetGame()">RESTART</button>  <script>
+    const board = document.querySelectorAll('.cell');
+    const turnDisplay = document.getElementById('turn');
+    const scoreX = document.getElementById('scoreX');
+    const scoreO = document.getElementById('scoreO');
+    let currentPlayer = 'X';
+    let scores = { X: 0, O: 0 };
+
+    board.forEach(cell => {
+      cell.addEventListener('click', () => {
+        if (cell.textContent !== '') return;
+        cell.textContent = currentPlayer;
+        cell.classList.add(currentPlayer.toLowerCase());
+        let winner = checkWinner();
+        if (winner) {
+          alert(`${winner} wins!`);
+          scores[winner]++;
+          scoreX.textContent = scores.X;
+          scoreO.textContent = scores.O;
+          resetBoard();
+        } else if ([...board].every(c => c.textContent)) {
+          alert("It's a tie!");
+          resetBoard();
+        } else {
+          currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+          turnDisplay.textContent = `${currentPlayer}'s Turn`;
+        }
+      });
+    });
+
+    function checkWinner() {
+      const winCombos = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      return winCombos.find(combo => {
+        const [a,b,c] = combo;
+        return board[a].textContent &&
+               board[a].textContent === board[b].textContent &&
+               board[a].textContent === board[c].textContent;
+      }) ? currentPlayer : null;
+    }
+
+    function resetBoard() {
+      board.forEach(cell => {
+        cell.textContent = '';
+        cell.classList.remove('x', 'o');
+      });
+      currentPlayer = 'X';
+      turnDisplay.textContent = `X's Turn`;
+    }
+
+    function resetGame() {
+      resetBoard();
+      scores = { X: 0, O: 0 };
+      scoreX.textContent = 0;
+      scoreO.textContent = 0;
+    }
+  </script></body>
 </html>
